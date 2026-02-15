@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Heart Greeting</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 🌸 TIÊU ĐỀ -->
+<div class="title">Happy Valentine 💖</div>
+
+<!-- ❤️ CANVAS -->
+<canvas id="c"></canvas>
+
+<!-- 💌 LỜI CHÚC -->
+<div class="message">
+  Chúc bạn luôn hạnh phúc,<br>
+  yêu thương và được yêu thương 💕
+</div>
+
+<script src="heart.js"></script>
+<script src="balloons.js"></script>
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+addEventListener("resize", resize);
+resize();
+
+let t = 0;
+function loop(){
+  t += 0.03;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  drawBalloons(ctx, canvas, t);
+  drawHeart(ctx, canvas, t);
+
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+
+</body>
+</html>
