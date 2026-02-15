@@ -7,16 +7,13 @@
 </head>
 <body>
 
-<!-- 🌸 TIÊU ĐỀ -->
-<div class="title">Happy Valentine 💖</div>
+<div class="title">💖 Gửi đến người tôi yêu 💖</div>
 
-<!-- ❤️ CANVAS -->
 <canvas id="c"></canvas>
 
-<!-- 💌 LỜI CHÚC -->
 <div class="message">
-  Chúc bạn luôn hạnh phúc,<br>
-  yêu thương và được yêu thương 💕
+  Chúc em luôn cười thật tươi,<br>
+  trái tim luôn ấm áp và hạnh phúc 💕
 </div>
 
 <script src="heart.js"></script>
@@ -33,16 +30,16 @@ addEventListener("resize", resize);
 resize();
 
 let t = 0;
-function loop(){
+function animate(){
   t += 0.03;
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  drawBalloons(ctx, canvas, t);
-  drawHeart(ctx, canvas, t);
+  drawBalloons(ctx, canvas, t); // 🎈 phía sau
+  drawHeart(ctx, canvas, t);    // ❤️ phía trước
 
-  requestAnimationFrame(loop);
+  requestAnimationFrame(animate);
 }
-loop();
+animate();
 </script>
 
 </body>
