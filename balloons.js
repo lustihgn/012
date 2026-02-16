@@ -1,49 +1,76 @@
-const BALLOON_COUNT = 24;
+const BALLOON_COUNT = 14;
 const IMAGE_COUNT = 12;
+
 const balloons = [];
 const balloonImages = [];
 
-/* load ảnh */
+let loaded = 0;
+let ready = false;
+let frame = 0;
+
+/* preload */
 for(let i=1;i<=IMAGE_COUNT;i++){
   const img = new Image();
+  img.onload = () => {
+    loaded++;
+    if(loaded === IMAGE_COUNT) ready = true;
+  };
   img.src = `images/anh${i}.jpg`;
   balloonImages.push(img);
 }
 
 function createBalloon(canvas){
-  const side = Math.random() < 0.5 ? -1 : 1;
+  const side = Math.random()<0.5?-1:1;
+  const size = 24+Math.random()*20;
 
-  return {
-    img: balloonImages[Math.floor(Math.random()*IMAGE_COUNT)],
-    x: canvas.width/2 + side*(260 + Math.random()*220),
+  return{
+    img: balloonImages[Math.random()*IMAGE_COUNT|0],
+    x: canvas.width/2 + side*(200+Math.random()*160),
     y: canvas.height + Math.random()*canvas.height,
-    size: 28 + Math.random()*26,
-    speed: 0.25 + Math.random()*0.45,
-    phase: Math.random()*Math.PI*2,
-    alpha: 0.12 + Math.random()*0.18
+    size,
+    half:size/2,
+    speed:0.18+Math.random()*0.3,
+    sway:0.12+Math.random()*0.12,
+    phase:Math.random()*Math.PI*2,
+    alpha:0.16
   };
 }
 
 function drawBalloons(ctx, canvas, t){
+  if(!ready) return;
+
   if(!balloons.length){
     for(let i=0;i<BALLOON_COUNT;i++){
       balloons.push(createBalloon(canvas));
     }
   }
 
-  for(const b of balloons){
-    b.y -= b.speed;
-    b.x += Math.sin(t + b.phase) * 0.25;
+  frame++;
+  const update = frame%3===0;
 
-    if(b.y < -80){
-      Object.assign(b, createBalloon(canvas));
+  for(const b of balloons){
+
+    if(update){
+      b.y -= b.speed;
+      b.x += Math.sin(t+b.phase)*b.sway;
+
+      if(b.y < -60){
+        Object.assign(b, createBalloon(canvas));
+        continue;
+      }
     }
+
+    if(
+      b.x < -b.size ||
+      b.x > canvas.width + b.size ||
+      b.y > canvas.height + b.size
+    ) continue;
 
     ctx.globalAlpha = b.alpha;
     ctx.drawImage(
       b.img,
-      b.x - b.size/2,
-      b.y - b.size/2,
+      b.x-b.half,
+      b.y-b.half,
       b.size,
       b.size
     );
