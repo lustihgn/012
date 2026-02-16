@@ -12,7 +12,7 @@ canvas{
 
 .title{
   position:fixed;
-  top:26px;
+  top:24px;
   width:100%;
   text-align:center;
   font-size:32px;
@@ -23,11 +23,10 @@ canvas{
 
 .message{
   position:fixed;
-  bottom:32px;
+  bottom:28px;
   width:100%;
   text-align:center;
   font-size:18px;
-  line-height:1.5;
   color:#ffc0dc;
   text-shadow:0 0 12px rgba(255,150,200,.45);
   pointer-events:none;
