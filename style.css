@@ -2,7 +2,7 @@ html,body{
   margin:0;
   background:#050505;
   overflow:hidden;
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family:"Segoe UI",system-ui,sans-serif;
 }
 
 canvas{
@@ -10,7 +10,6 @@ canvas{
   inset:0;
 }
 
-/* 🌸 tiêu đề */
 .title{
   position:fixed;
   top:28px;
@@ -22,7 +21,6 @@ canvas{
   pointer-events:none;
 }
 
-/* 💌 lời chúc */
 .message{
   position:fixed;
   bottom:36px;
