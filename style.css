@@ -1,23 +1,37 @@
 html,body{
   margin:0;
   padding:0;
-  width:100%;
-  height:100%;
-  background:black;
+  background:#050505;
   overflow:hidden;
-  text-align:center;
-  font-family:sans-serif;
-}
-
-h1, p{
-  color:#ffb6d5;
-  text-shadow:0 0 10px #ff7eb3;
-  position:relative;
-  z-index:2;
+  font-family:"Segoe UI",system-ui,sans-serif;
 }
 
 canvas{
   position:fixed;
   inset:0;
-  z-index:1;
+}
+
+/* 🌸 tiêu đề */
+.title{
+  position:fixed;
+  top:24px;
+  width:100%;
+  text-align:center;
+  font-size:38px;
+  color:#ffd6ea;
+  text-shadow:0 0 25px rgba(255,140,200,.9);
+  pointer-events:none;
+}
+
+/* 💌 lời chúc */
+.message{
+  position:fixed;
+  bottom:32px;
+  width:100%;
+  text-align:center;
+  font-size:22px;
+  line-height:1.6;
+  color:#ffc6e3;
+  text-shadow:0 0 18px rgba(255,140,200,.8);
+  pointer-events:none;
 }
