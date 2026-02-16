@@ -1,59 +1,51 @@
-* {
+html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: black;
+  background: #050505;
   overflow: hidden;
-  font-family: Arial, sans-serif;
-  color: pink;
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
 
-/* ===== TIÊU ĐỀ ===== */
-.title {
+/* Trái tim */
+canvas {
   position: fixed;
-  top: 20px;
-  width: 100%;
-  text-align: center;
-  font-size: 32px;
-  text-shadow: 0 0 10px pink;
-  z-index: 10;
-}
-
-/* ===== CHỮ DƯỚI ===== */
-.footer {
-  position: fixed;
-  bottom: 30px;
-  width: 100%;
-  text-align: center;
-  font-size: 22px;
-  text-shadow: 0 0 10px pink;
-  z-index: 10;
-}
-
-/* ===== CANVAS TRÁI TIM ===== */
-#heartCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   z-index: 1;
 }
 
-/* ===== BÓNG BAY ===== */
-.balloon {
+/* Tiêu đề */
+.title {
   position: fixed;
-  bottom: -400px;
-  border-radius: 50%;
-  overflow: hidden;
+  top: 28px;
+  width: 100%;
+  text-align: center;
+  font-size: 34px;
+  color: #ffd1e6;
+  text-shadow: 0 0 20px rgba(255,150,200,.7);
   z-index: 5;
   pointer-events: none;
 }
 
-.balloon img {
+/* Lời chúc */
+.message {
+  position: fixed;
+  bottom: 36px;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  text-align: center;
+  font-size: 22px;
+  line-height: 1.6;
+  color: #ffc0dc;
+  text-shadow: 0 0 16px rgba(255,150,200,.6);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Bóng bay */
+.balloon {
+  position: fixed;
+  z-index: 3;
   border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  box-shadow: 0 0 25px rgba(255,170,210,.4);
 }
