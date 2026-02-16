@@ -10,24 +10,27 @@ canvas{
   inset:0;
 }
 
+/* 🌸 tiêu đề */
 .title{
   position:fixed;
-  top:22px;
+  top:28px;
   width:100%;
   text-align:center;
-  font-size:32px;
+  font-size:34px;
   color:#ffd1e6;
-  text-shadow:0 0 18px rgba(255,150,200,.6);
+  text-shadow:0 0 20px rgba(255,150,200,.6);
   pointer-events:none;
 }
 
+/* 💌 lời chúc */
 .message{
   position:fixed;
-  bottom:28px;
+  bottom:36px;
   width:100%;
   text-align:center;
-  font-size:18px;
+  font-size:20px;
+  line-height:1.5;
   color:#ffc0dc;
-  text-shadow:0 0 12px rgba(255,150,200,.45);
+  text-shadow:0 0 14px rgba(255,150,200,.45);
   pointer-events:none;
 }
