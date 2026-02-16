@@ -11,27 +11,35 @@ canvas{
   inset:0;
 }
 
-/* 🌸 tiêu đề */
+/* 🌸 TIÊU ĐỀ */
 .title{
   position:fixed;
-  top:24px;
+  top:18px;
   width:100%;
   text-align:center;
-  font-size:38px;
-  color:#ffd6ea;
-  text-shadow:0 0 25px rgba(255,140,200,.9);
+  font-size:46px;          /* TO */
+  font-weight:600;
+  color:#ffd9ee;
+  letter-spacing:1px;
+  text-shadow:
+    0 0 10px rgba(255,160,210,.8),
+    0 0 30px rgba(255,140,200,.9);
   pointer-events:none;
 }
 
-/* 💌 lời chúc */
+/* 💌 LỜI CHÚC */
 .message{
   position:fixed;
-  bottom:32px;
+  bottom:26px;
   width:100%;
+  padding:0 12px;
   text-align:center;
-  font-size:22px;
+  font-size:28px;          /* TO RÕ */
+  font-weight:500;
   line-height:1.6;
-  color:#ffc6e3;
-  text-shadow:0 0 18px rgba(255,140,200,.8);
+  color:#ffcbe6;
+  text-shadow:
+    0 0 10px rgba(255,160,210,.8),
+    0 0 24px rgba(255,140,200,.9);
   pointer-events:none;
 }
