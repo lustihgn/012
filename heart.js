@@ -39,9 +39,8 @@ function drawHeart(ctx, canvas, t){
   ctx.scale(HEART_SCALE*pulse, -HEART_SCALE*pulse);
 
   for(const p of heartPoints){
-    const amp = 0.002;
-    const dx = Math.cos(p.dir + t*p.speed) * amp;
-    const dy = Math.sin(p.dir + t*p.speed) * amp;
+    const dx = Math.cos(p.dir + t*p.speed) * 0.002;
+    const dy = Math.sin(p.dir + t*p.speed) * 0.002;
 
     let alpha = 0.55 + p.edge*0.3;
     if(p.sparkle){
