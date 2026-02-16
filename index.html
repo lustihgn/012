@@ -2,9 +2,9 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Heart Greeting</title>
 <link rel="stylesheet" href="style.css">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 <body>
 
@@ -20,16 +20,22 @@
 
 <script>
 const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
-
-let dpr = Math.min(devicePixelRatio || 1, 1.5);
+const ctx = canvas.getContext("2d",{alpha:true});
 
 function resize(){
-  canvas.width  = innerWidth * dpr;
-  canvas.height = innerHeight * dpr;
+  const dpr = window.devicePixelRatio || 1;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  canvas.style.width  = w + "px";
+  canvas.style.height = h + "px";
+
+  canvas.width  = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+
   ctx.setTransform(dpr,0,0,dpr,0,0);
 }
-addEventListener("resize", resize);
+window.addEventListener("resize", resize);
 resize();
 
 let t = 0;
@@ -37,8 +43,8 @@ function animate(){
   t += 0.03;
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  drawBalloons(ctx, canvas, t); // 🎈 nền
-  drawHeart(ctx, canvas, t);    // ❤️ trước
+  drawBalloons(ctx, t);
+  drawHeart(ctx, t);
 
   requestAnimationFrame(animate);
 }
