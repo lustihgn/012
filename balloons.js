@@ -1,6 +1,6 @@
-const BALLOON_COUNT = 16;
-const images = [];
+const BALLOON_COUNT = 18;
 const balloons = [];
+const images = [];
 let ready = false;
 
 /* preload ảnh */
@@ -10,7 +10,7 @@ let ready = false;
     const img = new Image();
     img.onload = img.onerror = () => {
       loaded++;
-      if(loaded === 12) ready = true;
+      if(loaded===12) ready = true;
     };
     img.src = `images/anh${i}.jpg`;
     images.push(img);
@@ -18,21 +18,25 @@ let ready = false;
 })();
 
 function createBalloon(){
-  const size = 26 + Math.random()*20;
-  return {
+  const size = 26 + Math.random()*22;
+  const side = Math.random()<0.5 ? "left":"right";
+
+  return{
     img: images[Math.random()*images.length|0],
-    x: innerWidth/2 + (Math.random()<0.5?-1:1)*(200+Math.random()*160),
+    x: side==="left"
+      ? Math.random()*innerWidth*0.25
+      : innerWidth*0.75 + Math.random()*innerWidth*0.25,
     y: innerHeight + Math.random()*innerHeight,
     size,
-    half: size/2,
-    speed: 0.25 + Math.random()*0.35,
-    sway: 0.2 + Math.random()*0.2,
-    phase: Math.random()*Math.PI*2,
-    alpha: 0.18+Math.random()*0.12
+    half:size/2,
+    speed:0.3+Math.random()*0.4,
+    sway:0.3+Math.random()*0.3,
+    phase:Math.random()*Math.PI*2,
+    alpha:0.4+Math.random()*0.3
   };
 }
 
-function drawBalloons(ctx, t){
+function drawBalloons(ctx,t){
   if(!ready) return;
 
   if(!balloons.length){
@@ -47,7 +51,7 @@ function drawBalloons(ctx, t){
       Object.assign(b, createBalloon());
     }
 
-    if(!b.img.complete || b.img.naturalWidth === 0) continue;
+    if(!b.img.complete || b.img.naturalWidth===0) continue;
 
     ctx.globalAlpha = b.alpha;
     ctx.drawImage(
