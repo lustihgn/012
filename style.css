@@ -1,51 +1,34 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #050505;
+  background: #000;
   overflow: hidden;
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
-/* Trái tim */
 canvas {
   position: fixed;
   inset: 0;
-  z-index: 1;
 }
 
-/* Tiêu đề */
 .title {
   position: fixed;
   top: 28px;
   width: 100%;
   text-align: center;
   font-size: 34px;
-  color: #ffd1e6;
-  text-shadow: 0 0 20px rgba(255,150,200,.7);
-  z-index: 5;
-  pointer-events: none;
+  color: #ffd1e8;
+  text-shadow: 0 0 25px rgba(255,140,200,.7);
+  z-index: 2;
 }
 
-/* Lời chúc */
 .message {
   position: fixed;
-  bottom: 36px;
+  bottom: 32px;
   width: 100%;
   text-align: center;
-  font-size: 22px;
-  line-height: 1.6;
+  font-size: 20px;
   color: #ffc0dc;
-  text-shadow: 0 0 16px rgba(255,150,200,.6);
-  z-index: 5;
-  pointer-events: none;
-}
-
-/* Bóng bay */
-.balloon {
-  position: fixed;
-  z-index: 3;
-  border-radius: 50%;
-  overflow: hidden;
-  pointer-events: none;
-  box-shadow: 0 0 25px rgba(255,170,210,.4);
+  text-shadow: 0 0 20px rgba(255,140,200,.6);
+  z-index: 2;
 }
