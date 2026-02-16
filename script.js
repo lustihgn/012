@@ -9,120 +9,72 @@ resize();
 addEventListener("resize", resize);
 
 /* ===== CẤU HÌNH ===== */
-const HEART_POINTS = 6000;
-const FLOAT_POINTS = 120; // 👈 hạt bay nền
-const BASE_SCALE = 34;
-
+const POINTS = 5000;
+const BASE_SCALE = 18; // 👈 giảm còn ~1/2
 let time = 0;
 
-const heartParticles = [];
-const floatParticles = [];
+const particles = [];
 
-/* ===== CÔNG THỨC TRÁI TIM (GIỮ ĐÚNG HÌNH DẠNG ĐẸP) ===== */
-function heart(t){
-  return {
-    x: 16 * Math.sin(t) ** 3,
-    y: -(13 * Math.cos(t)
-        - 5 * Math.cos(2*t)
-        - 2 * Math.cos(3*t)
-        - Math.cos(4*t))
-  };
+/* Công thức trái tim – GIỮ NGUYÊN */
+function heart(x, y) {
+  return Math.pow(x*x + y*y - 1, 3) - x*x*y*y*y;
 }
 
-/* ===== TẠO HẠT TRÁI TIM ===== */
-function generateHeart(){
-  heartParticles.length = 0;
+/* Tạo hạt: viền dày – vào trong thưa dần */
+function generateHeart() {
+  particles.length = 0;
 
-  while(heartParticles.length < HEART_POINTS){
-    const a = Math.random() * Math.PI * 2;
-    const k = Math.pow(Math.random(), 0.35);
-    const p = heart(a);
+  while (particles.length < POINTS) {
+    let x = Math.random() * 2 - 1;
+    let y = Math.random() * 2 - 1;
 
-    const center = Math.abs(p.x * k);
-    if(Math.random() > Math.min(1, Math.pow(center / 1.0, 0.85))) continue;
+    const v = heart(x, y);
 
-    heartParticles.push({
-      x: p.x * k,
-      y: p.y * k,
-      nx: p.x * k,
-      ny: p.y * k,
-      r: 0.03 + k * 0.085,
-      o: 0.35 + k * 0.5,
-      phase: Math.random() * Math.PI * 2,
-      speed: 0.005 + Math.random() * 0.01
-    });
-  }
-}
+    if (v <= 0 && v > -0.02) {
+      const r = Math.sqrt(x*x + y*y);
 
-/* ===== TẠO HẠT BAY NỀN ===== */
-function generateFloating(){
-  floatParticles.length = 0;
+      if (Math.random() > r * 0.85) continue;
 
-  for(let i = 0; i < FLOAT_POINTS; i++){
-    floatParticles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.4 + 0.6,
-      vy: Math.random() * 0.25 + 0.15,
-      o: Math.random() * 0.35 + 0.15
-    });
-  }
-}
-
-generateHeart();
-generateFloating();
-
-/* ===== ANIMATE ===== */
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  time += 0.025;
-
-  /* 🌌 HẠT BAY NỀN */
-  for(const f of floatParticles){
-    ctx.globalAlpha = f.o;
-    ctx.beginPath();
-    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-    ctx.fillStyle = "rgb(255,140,170)";
-    ctx.fill();
-
-    f.y -= f.vy;
-    if(f.y < -10){
-      f.y = canvas.height + 10;
-      f.x = Math.random() * canvas.width;
+      particles.push({
+        x,
+        y,
+        size: Math.random() * 0.035 + 0.015,
+        offset: Math.random() * Math.PI * 2
+      });
     }
   }
+}
+generateHeart();
 
-  ctx.globalAlpha = 1;
+/* Vẽ & animate */
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  time += 0.035;
 
-  /* 💓 TRÁI TIM */
-  const beat = 1 + Math.sin(time) * 0.045;
+  const beat = 1 + Math.sin(time) * 0.05;
 
   ctx.save();
-  ctx.translate(canvas.width / 2, canvas.height / 2);
-  ctx.scale(BASE_SCALE * beat, -BASE_SCALE * beat);
+  ctx.translate(
+    canvas.width / 2,
+    canvas.height / 2 + 80 // 👈 đẩy tim xuống thấp
+  );
 
-  for(const p of heartParticles){
-    p.phase += p.speed;
+  // ❌ bỏ dấu âm → tim KHÔNG bị ngược
+  ctx.scale(BASE_SCALE * beat, BASE_SCALE * beat);
 
-    const sparkle = (Math.sin(p.phase) + 1) * 0.12;
-    const pulse = (beat - 1) * 0.6;
+  for (let p of particles) {
+    const pulse = Math.sin(time + p.offset) * 0.015;
 
-    ctx.globalAlpha = p.o + sparkle;
-    ctx.beginPath();
-    ctx.arc(
-      p.nx + p.nx * pulse,
-      p.ny + p.ny * pulse,
-      p.r,
-      0,
-      Math.PI * 2
+    ctx.fillStyle = "rgba(255,150,190,0.9)";
+    ctx.fillRect(
+      p.x + pulse,
+      p.y + pulse,
+      p.size,
+      p.size
     );
-    ctx.fillStyle = "rgb(255,110,145)";
-    ctx.fill();
   }
 
   ctx.restore();
-  ctx.globalAlpha = 1;
-
   requestAnimationFrame(draw);
 }
 
