@@ -1,116 +1,123 @@
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
 function resize(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 }
 resize();
-window.addEventListener("resize", resize);
+addEventListener("resize", resize);
 
-/* ================= HEART ================= */
-const HEART_POINTS = 7000;
-const HEART_SCALE = 130;
-let heart = [];
+/* ================= ❤️ HEART ================= */
+const HEART_PARTICLES = 6000;
+const HEART_SCALE = 95; // to hơn, rõ hơn
+let heartPoints = [];
 
-function heartFn(x, y){
+function heartFn(x,y){
   const a = x*x + y*y - 1;
   return a*a*a - x*x*y*y*y;
 }
 
-function createHeart(){
-  heart = [];
-  while(heart.length < HEART_POINTS){
-    const x = (Math.random()*2 - 1)*1.4;
-    const y = (Math.random()*2 - 1)*1.4;
-    if(heartFn(x,y) <= 0){
-      heart.push({
-        x, y,
-        r: 0.0025 + Math.random()*0.0015,
-        a: 0.5 + Math.random()*0.4
+function generateHeart(){
+  heartPoints=[];
+  while(heartPoints.length<HEART_PARTICLES){
+    let x=(Math.random()*2-1)*1.3;
+    let y=(Math.random()*2-1)*1.3;
+    if(heartFn(x,y)<=0){
+      heartPoints.push({
+        x,y,
+        r:0.004,
+        phase:Math.random()*Math.PI*2
       });
     }
   }
 }
-createHeart();
+generateHeart();
 
-/* ================= BALLOONS ================= */
+function drawHeart(t){
+  const pulse=1+Math.sin(t)*0.06;
+  ctx.save();
+  ctx.translate(canvas.width/2,canvas.height/2);
+  ctx.scale(HEART_SCALE*pulse,-HEART_SCALE*pulse);
+
+  for(const p of heartPoints){
+    const a=0.85+0.15*Math.sin(t*2+p.phase);
+    ctx.fillStyle=`rgba(255,160,200,${a})`;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* ================= 🎈 BALLOONS ================= */
 const BALLOON_COUNT = 16;
 const IMAGE_COUNT = 12;
-const balloons = [];
-const images = [];
-let imagesReady = false;
+const balloons=[];
+const images=[];
 
-let loaded = 0;
+/* load ảnh */
 for(let i=1;i<=IMAGE_COUNT;i++){
-  const img = new Image();
-  img.src = `images/anh${i}.jpg`;
-  img.onload = () => {
-    loaded++;
-    if(loaded === IMAGE_COUNT) imagesReady = true;
-  };
+  const img=new Image();
+  img.src=`images/anh${i}.jpg`;
   images.push(img);
 }
 
-function createBalloon(side){
-  return {
+function newBalloon(){
+  return{
     img: images[Math.floor(Math.random()*images.length)],
-    x: side === "left"
-      ? Math.random()*canvas.width*0.25
-      : canvas.width*0.75 + Math.random()*canvas.width*0.25,
-    y: canvas.height + Math.random()*canvas.height,
-    size: 40 + Math.random()*35,
-    speed: 0.6 + Math.random()*0.8,
-    sway: Math.random()*Math.PI*2
+    x: Math.random()*canvas.width,
+    y: canvas.height + Math.random()*300,
+    r: 34 + Math.random()*10, // TO hơn
+    speed: 0.4 + Math.random()*0.4,
+    phase: Math.random()*Math.PI*2
   };
 }
 
-function initBalloons(){
-  balloons.length = 0;
-  for(let i=0;i<BALLOON_COUNT;i++){
-    balloons.push(createBalloon(i%2===0?"left":"right"));
-  }
-}
-initBalloons();
+for(let i=0;i<BALLOON_COUNT;i++) balloons.push(newBalloon());
 
-/* ================= DRAW ================= */
-let t = 0;
-function animate(){
-  t += 0.02;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  /* Balloons */
-  balloons.forEach(b=>{
+function drawBalloons(t){
+  for(const b of balloons){
     b.y -= b.speed;
-    b.x += Math.sin(t + b.sway)*0.5;
+    b.x += Math.sin(t+b.phase)*0.4;
 
-    if(b.y < -100){
-      Object.assign(b, createBalloon(Math.random()<0.5?"left":"right"));
+    if(b.y < -b.r*2){
+      Object.assign(b,newBalloon());
+      b.y = canvas.height + 50;
     }
 
-    if(imagesReady && b.img.complete && b.img.naturalWidth){
-      ctx.drawImage(b.img, b.x-b.size/2, b.y-b.size/2, b.size, b.size);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.closePath();
+    ctx.clip();
+
+    if(b.img.complete && b.img.naturalWidth>0){
+      ctx.drawImage(b.img,b.x-b.r,b.y-b.r,b.r*2,b.r*2);
     }else{
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.size/2, 0, Math.PI*2);
-      ctx.fillStyle = "rgba(255,190,215,0.85)";
+      ctx.fillStyle="#f2a6c8";
       ctx.fill();
     }
-  });
 
-  /* Heart */
-  const pulse = 1 + Math.sin(t*2)*0.04;
-  ctx.save();
-  ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.scale(HEART_SCALE*pulse, -HEART_SCALE*pulse);
+    ctx.restore();
 
-  heart.forEach(p=>{
-    ctx.fillStyle = `rgba(255,170,210,${p.a})`;
+    /* viền bóng */
+    ctx.strokeStyle="rgba(255,200,220,.8)";
+    ctx.lineWidth=2;
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fill();
-  });
-  ctx.restore();
+    ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.stroke();
+  }
+}
+
+/* ================= 🎬 ANIMATE ================= */
+let t=0;
+function animate(){
+  t+=0.02;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  drawBalloons(t);
+  drawHeart(t);
 
   requestAnimationFrame(animate);
 }
