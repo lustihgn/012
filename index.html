@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Heart Greeting</title>
 <link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 </head>
 <body>
 
@@ -36,7 +37,7 @@ function animate(){
   t += 0.03;
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  drawBalloons(ctx, canvas, t); // 🎈 sau
+  drawBalloons(ctx, canvas, t); // 🎈 nền
   drawHeart(ctx, canvas, t);    // ❤️ trước
 
   requestAnimationFrame(animate);
