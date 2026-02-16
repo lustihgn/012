@@ -1,44 +1,33 @@
-const BALLOON_COUNT = 14;
-const IMAGE_COUNT = 12;
-
+const BALLOON_COUNT = 18;
 const balloons = [];
-const balloonImages = [];
-
-let loaded = 0;
-let ready = false;
 let frame = 0;
 
-/* preload */
-for(let i=1;i<=IMAGE_COUNT;i++){
-  const img = new Image();
-  img.onload = () => {
-    loaded++;
-    if(loaded === IMAGE_COUNT) ready = true;
+function createBalloon(canvas){
+  const side = Math.random() < 0.5 ? -1 : 1;
+  return {
+    x: canvas.width/2 + side*(200+Math.random()*180),
+    y: canvas.height + Math.random()*canvas.height,
+    r: 10 + Math.random()*8,
+    speed: 0.2 + Math.random()*0.35,
+    sway: 0.2 + Math.random()*0.2,
+    phase: Math.random()*Math.PI*2,
+    alpha: 0.18 + Math.random()*0.12,
+    color: `hsl(${330 + Math.random()*30},80%,70%)`
   };
-  img.src = `images/anh${i}.jpg`;
-  balloonImages.push(img);
 }
 
-function createBalloon(canvas){
-  const side = Math.random()<0.5?-1:1;
-  const size = 24+Math.random()*20;
+function drawBalloonShape(ctx, b){
+  ctx.beginPath();
+  ctx.ellipse(b.x, b.y, b.r*0.9, b.r*1.15, 0, 0, Math.PI*2);
+  ctx.fill();
 
-  return{
-    img: balloonImages[Math.random()*IMAGE_COUNT|0],
-    x: canvas.width/2 + side*(200+Math.random()*160),
-    y: canvas.height + Math.random()*canvas.height,
-    size,
-    half:size/2,
-    speed:0.18+Math.random()*0.3,
-    sway:0.12+Math.random()*0.12,
-    phase:Math.random()*Math.PI*2,
-    alpha:0.16
-  };
+  ctx.beginPath();
+  ctx.moveTo(b.x, b.y + b.r*1.15);
+  ctx.lineTo(b.x, b.y + b.r*1.5);
+  ctx.stroke();
 }
 
 function drawBalloons(ctx, canvas, t){
-  if(!ready) return;
-
   if(!balloons.length){
     for(let i=0;i<BALLOON_COUNT;i++){
       balloons.push(createBalloon(canvas));
@@ -46,34 +35,25 @@ function drawBalloons(ctx, canvas, t){
   }
 
   frame++;
-  const update = frame%3===0;
+  const update = frame % 2 === 0;
+
+  ctx.lineWidth = 1;
 
   for(const b of balloons){
-
     if(update){
       b.y -= b.speed;
-      b.x += Math.sin(t+b.phase)*b.sway;
+      b.x += Math.sin(t + b.phase) * b.sway;
 
       if(b.y < -60){
         Object.assign(b, createBalloon(canvas));
-        continue;
       }
     }
 
-    if(
-      b.x < -b.size ||
-      b.x > canvas.width + b.size ||
-      b.y > canvas.height + b.size
-    ) continue;
-
     ctx.globalAlpha = b.alpha;
-    ctx.drawImage(
-      b.img,
-      b.x-b.half,
-      b.y-b.half,
-      b.size,
-      b.size
-    );
+    ctx.fillStyle = b.color;
+    ctx.strokeStyle = b.color;
+
+    drawBalloonShape(ctx, b);
   }
   ctx.globalAlpha = 1;
 }
