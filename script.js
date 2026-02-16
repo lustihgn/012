@@ -1,4 +1,4 @@
-/* ================= TRÁI TIM ================= */
+/* ================== CANVAS TRÁI TIM ================== */
 const canvas = document.getElementById("heartCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -9,50 +9,72 @@ function resize() {
 resize();
 window.addEventListener("resize", resize);
 
-let t = 0;
-
 function drawHeart() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "pink";
 
-  for (let i = 0; i < 1200; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const r = 16 * Math.sin(a) ** 3;
-    const x = canvas.width / 2 + r * Math.cos(a) * 12;
+  const scale = 11; // kích thước trái tim
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+
+  for (let i = 0; i < 2000; i++) {
+    const t = Math.random() * Math.PI * 2;
+    const x =
+      16 * Math.pow(Math.sin(t), 3);
     const y =
-      canvas.height / 2 -
-      (13 * Math.cos(a) -
-        5 * Math.cos(2 * a) -
-        2 * Math.cos(3 * a) -
-        Math.cos(4 * a)) *
-        12;
+      13 * Math.cos(t) -
+      5 * Math.cos(2 * t) -
+      2 * Math.cos(3 * t) -
+      Math.cos(4 * t);
 
     ctx.globalAlpha = 0.6;
-    ctx.fillRect(x, y, 1.5, 1.5);
+    ctx.fillRect(
+      cx + x * scale,
+      cy - y * scale,
+      1.5,
+      1.5
+    );
   }
 
   requestAnimationFrame(drawHeart);
 }
 drawHeart();
 
-/* ================= BÓNG BAY ================= */
+/* ================== BÓNG BAY ẢNH ================== */
 const images = [
   "anh1.jpg","anh2.jpg","anh3.jpg","anh4.jpg","anh5.jpg",
   "anh6.jpg","anh7.jpg","anh8.jpg","anh9.jpg",
   "anh10.jpg","anh11.jpg","anh12.jpg"
 ];
 
+// vùng cấm (trái tim)
+const heartZone = {
+  x: window.innerWidth / 2,
+  y: window.innerHeight / 2,
+  r: 220
+};
+
 function createBalloon() {
   const balloon = document.createElement("div");
   balloon.className = "balloon";
 
-  // 🔥 ẢNH TO RÕ
-  const size = Math.random() * 80 + 260; // 260–340px
+  const size = 260 + Math.random() * 80; // ảnh TO
   balloon.style.width = size + "px";
   balloon.style.height = size + "px";
 
-  balloon.style.left =
-    Math.random() * (window.innerWidth - size) + "px";
+  let x;
+  do {
+    x = Math.random() * (window.innerWidth - size);
+  } while (
+    Math.abs(x + size / 2 - heartZone.x) < heartZone.r
+  );
+
+  let y = -350;
+  let angle = Math.random() * Math.PI * 2;
+  let speed = 1.8 + Math.random() * 1.2;
+
+  balloon.style.left = x + "px";
+  balloon.style.bottom = y + "px";
 
   const img = document.createElement("img");
   img.src = images[Math.floor(Math.random() * images.length)];
@@ -60,12 +82,14 @@ function createBalloon() {
 
   document.body.appendChild(balloon);
 
-  let y = -400;
-  const speed = Math.random() * 1.5 + 3.5;
-
   function fly() {
     y += speed;
+    angle += 0.02;
+
+    const drift = Math.sin(angle) * 30;
+
     balloon.style.bottom = y + "px";
+    balloon.style.transform = `translateX(${drift}px)`;
 
     if (y < window.innerHeight + 400) {
       requestAnimationFrame(fly);
@@ -77,5 +101,5 @@ function createBalloon() {
   fly();
 }
 
-/* ⏱️ TẦN SUẤT THƯA – MỖI LẦN 1 BÓNG */
-setInterval(createBalloon, 2800);
+// ⏱️ Tần suất THƯA – mỗi lần 1 bóng
+setInterval(createBalloon, 3000);
