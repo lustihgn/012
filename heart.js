@@ -17,13 +17,13 @@ function generateHeart(){
       const d = Math.sqrt(x*x + y*y);
       if(Math.random() < Math.pow(d,1.6)){
         heartPoints.push({
-          x, y,
-          r: 0.003 + Math.random()*0.0016,
-          dir: Math.random()*Math.PI*2,
-          speed: 0.5 + Math.random()*0.6,
-          phase: Math.random()*Math.PI*2,
-          sparkle: Math.random() < (d > 0.75 ? 0.1 : 0.05),
-          edge: d
+          x,y,
+          r:0.003+Math.random()*0.0016,
+          dir:Math.random()*Math.PI*2,
+          speed:0.5+Math.random()*0.6,
+          phase:Math.random()*Math.PI*2,
+          sparkle:Math.random()<(d>0.75?0.1:0.05),
+          edge:d
         });
       }
     }
@@ -53,6 +53,5 @@ function drawHeart(ctx, canvas, t){
     ctx.arc(p.x+dx, p.y+dy, p.r, 0, Math.PI*2);
     ctx.fill();
   }
-
   ctx.restore();
 }
