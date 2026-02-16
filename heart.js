@@ -1,5 +1,5 @@
-const HEART_PARTICLES = 8000;
-const HEART_SCALE = 115;
+const HEART_PARTICLES = 7000;
+const HEART_SCALE = 110;
 let heartPoints = [];
 
 function heartFn(x,y){
@@ -7,49 +7,45 @@ function heartFn(x,y){
   return a*a*a - x*x*y*y*y;
 }
 
-function generateHeart(){
-  heartPoints = [];
+(function generateHeart(){
   while(heartPoints.length < HEART_PARTICLES){
-    let x = (Math.random()*2-1)*1.35;
-    let y = (Math.random()*2-1)*1.35;
-
+    const x = (Math.random()*2-1)*1.35;
+    const y = (Math.random()*2-1)*1.35;
     if(heartFn(x,y) <= 0){
-      const d = Math.sqrt(x*x + y*y);
+      const d = Math.sqrt(x*x+y*y);
       if(Math.random() < Math.pow(d,1.6)){
         heartPoints.push({
           x,y,
-          r:0.003+Math.random()*0.0016,
+          r:0.003+Math.random()*0.0014,
           dir:Math.random()*Math.PI*2,
-          speed:0.5+Math.random()*0.6,
+          speed:0.4+Math.random()*0.5,
           phase:Math.random()*Math.PI*2,
-          sparkle:Math.random()<(d>0.75?0.1:0.05),
+          sparkle:Math.random()<0.07,
           edge:d
         });
       }
     }
   }
-}
-generateHeart();
+})();
 
-function drawHeart(ctx, canvas, t){
+function drawHeart(ctx, t){
+  const cx = innerWidth / 2;
+  const cy = innerHeight / 2;
   const pulse = 1 + Math.sin(t)*0.045;
 
   ctx.save();
-  ctx.translate(canvas.width/2, canvas.height/2);
+  ctx.translate(cx, cy);
   ctx.scale(HEART_SCALE*pulse, -HEART_SCALE*pulse);
 
   for(const p of heartPoints){
-    const dx = Math.cos(p.dir + t*p.speed) * 0.002;
-    const dy = Math.sin(p.dir + t*p.speed) * 0.002;
+    const dx = Math.cos(p.dir + t*p.speed)*0.002;
+    const dy = Math.sin(p.dir + t*p.speed)*0.002;
+    let a = 0.55 + p.edge*0.3;
+    if(p.sparkle) a += (Math.sin(t*2+p.phase)+1)*0.18;
 
-    let alpha = 0.55 + p.edge*0.3;
-    if(p.sparkle){
-      alpha += (Math.sin(t*2 + p.phase)+1)*0.18;
-    }
-
-    ctx.fillStyle = `rgba(255,170,210,${alpha})`;
+    ctx.fillStyle = `rgba(255,170,210,${a})`;
     ctx.beginPath();
-    ctx.arc(p.x+dx, p.y+dy, p.r, 0, Math.PI*2);
+    ctx.arc(p.x+dx,p.y+dy,p.r,0,Math.PI*2);
     ctx.fill();
   }
   ctx.restore();
