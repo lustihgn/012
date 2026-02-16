@@ -1,130 +1,56 @@
-const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
+const balloonImages = [
+  "anh1.jpg", "anh2.jpg", "anh3.jpg", "anh4.jpg", "anh5.jpg",
+  "anh6.jpg", "anh7.jpg", "anh8.jpg", "anh9.jpg",
+  "anh10.jpg", "anh11.jpg", "anh12.jpg"
+];
 
-function resize(){
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-}
-resize();
-addEventListener("resize", resize);
+const container = document.body;
 
-/* ================= PRELOAD IMAGES ================= */
-const IMAGE_COUNT = 12;
-const images = [];
-let imagesReady = 0;
+// ===== TẠO 1 BÓNG BAY =====
+function createBalloon() {
+  const balloon = document.createElement("div");
+  balloon.className = "balloon";
 
-for(let i=1;i<=IMAGE_COUNT;i++){
-  const img = new Image();
-  img.onload = ()=> imagesReady++;
-  img.src = `anh${i}.jpg`;
-  images.push(img);
-}
+  // 🔥 ẢNH TO RÕ (240–300px)
+  const size = Math.random() * 60 + 240;
 
-/* ================= ❤️ HEART (GIỮ NGUYÊN) ================= */
-const HEART_PARTICLES = 7200;
-const HEART_SCALE = 165;
-let heartPoints = [];
+  balloon.style.width = size + "px";
+  balloon.style.height = size + "px";
 
-function heartFn(x,y){
-  const a = x*x + y*y - 1;
-  return a*a*a - x*x*y*y*y;
-}
+  // Vị trí ngang ngẫu nhiên
+  balloon.style.left = Math.random() * (window.innerWidth - size) + "px";
 
-function generateHeart(){
-  heartPoints=[];
-  while(heartPoints.length < HEART_PARTICLES){
-    let x=(Math.random()*2-1)*1.3;
-    let y=(Math.random()*2-1)*1.3;
-    if(heartFn(x,y)<=0){
-      heartPoints.push({
-        x,y,
-        r:0.0034,
-        phase:Math.random()*Math.PI*2
-      });
+  // Bắt đầu từ dưới màn hình
+  balloon.style.bottom = "-350px";
+
+  // Chọn ảnh ngẫu nhiên
+  const img = document.createElement("img");
+  img.src = balloonImages[Math.floor(Math.random() * balloonImages.length)];
+  img.style.width = "100%";
+  img.style.height = "100%";
+  img.style.objectFit = "cover";
+  img.style.borderRadius = "50%";
+
+  balloon.appendChild(img);
+  container.appendChild(balloon);
+
+  // 🔥 BAY NHANH HƠN
+  let position = -350;
+  const speed = Math.random() * 1.5 + 3; // tốc độ cao
+
+  function fly() {
+    position += speed;
+    balloon.style.bottom = position + "px";
+
+    if (position < window.innerHeight + 400) {
+      requestAnimationFrame(fly);
+    } else {
+      balloon.remove();
     }
   }
-}
-generateHeart();
 
-function drawHeart(t){
-  const pulse = 1 + Math.sin(t)*0.05;
-  ctx.save();
-  ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.scale(HEART_SCALE*pulse, -HEART_SCALE*pulse);
-
-  for(const p of heartPoints){
-    const a = 0.9 + 0.1*Math.sin(t*2 + p.phase);
-    ctx.fillStyle = `rgba(255,165,205,${a})`;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    ctx.fill();
-  }
-  ctx.restore();
+  fly();
 }
 
-/* ================= 🎈 BALLOONS (TỪNG QUẢ – TỪ DƯỚI LÊN) ================= */
-const balloons = [];
-const SPAWN_DELAY = 45; // ⏱ sinh từng quả (frame)
-let spawnCounter = 0;
-
-function newBalloon(){
-  const side = Math.random() < 0.5 ? -1 : 1; // trái / phải
-  return{
-    img: images[Math.floor(Math.random()*images.length)],
-    x: canvas.width/2 + side * (160 + Math.random()*120), // né tim
-    y: canvas.height + 80,
-    r: 60 + Math.random()*15,   // 🔥 TO RÕ
-    speed: 0.6 + Math.random()*0.4,
-    sway: Math.random()*Math.PI*2
-  };
-}
-
-function drawBalloons(t){
-  if(imagesReady < IMAGE_COUNT) return;
-
-  /* sinh bóng TỪNG QUẢ */
-  spawnCounter++;
-  if(spawnCounter > SPAWN_DELAY){
-    balloons.push(newBalloon());
-    spawnCounter = 0;
-  }
-
-  for(let i=balloons.length-1;i>=0;i--){
-    const b = balloons[i];
-    b.y -= b.speed;
-    b.x += Math.sin(t + b.sway) * 0.4;
-
-    /* ra khỏi màn hình thì xoá */
-    if(b.y < -b.r*2){
-      balloons.splice(i,1);
-      continue;
-    }
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
-    ctx.clip();
-
-    ctx.drawImage(b.img, b.x-b.r, b.y-b.r, b.r*2, b.r*2);
-    ctx.restore();
-
-    ctx.strokeStyle = "rgba(255,210,230,.95)";
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
-    ctx.stroke();
-  }
-}
-
-/* ================= 🎬 ANIMATION ================= */
-let t = 0;
-function animate(){
-  t += 0.02;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  drawBalloons(t);
-  drawHeart(t);
-
-  requestAnimationFrame(animate);
-}
-animate();
+// ⏱️ TẦN SUẤT BAY THƯA (1 bóng / 2.5 giây)
+setInterval(createBalloon, 2500);
