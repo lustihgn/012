@@ -2,48 +2,40 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Heart Greeting</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="title">💖 Gửi đến người tôi yêu 💖</div>
+
 <canvas id="c"></canvas>
+
 <div class="message">
   Chúc em luôn cười thật tươi,<br>
   trái tim luôn ấm áp và hạnh phúc 💕
 </div>
 
-<script src="heart.js"></script>
-<script src="balloons.js"></script>
-
+<script src="script.js"></script>
 <script>
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
 function resize(){
-  const dpr = window.devicePixelRatio || 1;
-  const w = innerWidth;
-  const h = innerHeight;
-
-  canvas.style.width = w + "px";
-  canvas.style.height = h + "px";
-  canvas.width = w * dpr;
-  canvas.height = h * dpr;
-
-  ctx.setTransform(dpr,0,0,dpr,0,0);
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 }
-window.addEventListener("resize", resize);
 resize();
+addEventListener("resize", resize);
 
 let t = 0;
 function animate(){
   t += 0.03;
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  drawBalloons(ctx, t); // 🎈 sau
-  drawHeart(ctx, t);    // ❤️ trước
+  drawBalloons(ctx, canvas, t); // 🎈 sau
+  drawHeart(ctx, canvas, t);    // ❤️ trước
 
   requestAnimationFrame(animate);
 }
